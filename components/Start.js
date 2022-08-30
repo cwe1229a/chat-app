@@ -1,17 +1,20 @@
-import React from "react";
+import React, { Component } from "react";
 import {
   ImageBackground,
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput
 } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-export default class Start extends React.Component {
+export default class Start extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: "" };
+    this.state = {
+      name: "",
+      color: "color"
+    };
   }
 
   render() {
@@ -22,20 +25,54 @@ export default class Start extends React.Component {
           resizeMode="cover"
           style={styles.image}
         >
-          <TextInput
-            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-            onChangeText={(text) => this.setState({ text })}
-            value={this.state.text}
-            placeholder="Type Name Here ..."
-          />
-
-          <Button
-            style={styles.button}
-            title="Go to Chat"
-            onPress={() =>
-              this.props.navigation.navigate("Chat", { name: this.state.name })
-            }
-          />
+          <Text style={{ fontSize: 45, fontWeight: "bold", color: "#FFFFFF" }}>
+            Chat App
+          </Text>
+          <View style={styles.mainBox}>
+            {/* input box for chat user's name */}
+            <TextInput
+              style={[styles.inputBox, styles.textBox]}
+              onChangeText={(name) => this.setState({ name })}
+              value={this.state.name}
+              placeholder="Your Name"
+            />
+            {/* color options for chat user */}
+            <View style={styles.colorContainer}>
+              <Text style={styles.textBox}>Choose Background Color:</Text>
+              <View style={styles.colorOptions}>
+                <TouchableOpacity
+                  style={[styles.color, styles.color1]}
+                  onPress={() => this.setState({ color: "#090C08" })}
+                />
+                <TouchableOpacity
+                  style={[styles.color, styles.color2]}
+                  onPress={() => this.setState({ color: "#474056" })}
+                />
+                <TouchableOpacity
+                  style={[styles.color, styles.color3]}
+                  onPress={() => this.setState({ color: "#8A95A5" })}
+                />
+                <TouchableOpacity
+                  style={[styles.color, styles.color4]}
+                  onPress={() => this.setState({ color: "#B9C6AE" })}
+                />
+              </View>
+            </View>
+            {/* button for entering chat */}
+            <View style={styles.buttonWrapper}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() =>
+                  this.props.navigation.navigate("Chat", {
+                    name: this.state.name,
+                    color: this.state.color
+                  })
+                }
+              >
+                <Text style={styles.buttonText}>Start Chatting</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </ImageBackground>
       </View>
     );
@@ -47,20 +84,78 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: "center"
+    flexDirection: "column",
+    resizeMode: "cover",
+    alignItems: "center"
   },
-  text: {
-    color: "#FFFFFF",
-    fontSize: 42,
-    lineHeight: 84,
-    fontWeight: 300,
-    textAlign: "center",
-    backgroundColor: "#000000c0"
+  mainBox: {
+    width: "88%",
+    height: "44%",
+    alignItms: "center",
+    backgroundColor: "#FFFFFF",
+    justifyContent: "space-evenly",
+    marginBottom: "6%",
+    paddingTop: "6%",
+    paddingBottom: "6%",
+    alignItems: "center"
+  },
+  inputBox: {
+    height: 50,
+    width: "88%",
+    borderColor: "gray",
+    borderWidth: 2,
+    borderRadius: 2,
+    padding: "3%"
+  },
+  textBox: {
+    color: "#757083",
+    fontSize: 16,
+    fontWeight: "300"
+  },
+  buttonWrapper: {
+    width: "88%",
+    flex: 1
   },
   button: {
     height: 50,
     width: "100%",
-    backgroundColor: "#757083",
-    justifyContent: "center"
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 2,
+    backgroundColor: "#757083"
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "300"
+  },
+  colorContainer: {
+    width: "88%",
+    height: "60%",
+    justifyContent: "center",
+    marginLeft: "6%"
+  },
+  colorOptions: {
+    flexDirection: "row",
+    marginBottom: 1,
+    width: "88%"
+  },
+  color: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 30
+  },
+  color1: {
+    backgroundColor: "#090C08"
+  },
+  color2: {
+    backgroundColor: "#474056"
+  },
+  color3: {
+    backgroundColor: "#8A95A5"
+  },
+  color4: {
+    backgroundColor: "#B9C6AE"
   }
 });
