@@ -1,18 +1,27 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
-export default class Chat extends React.Component {
-  componentDidMount() {
-    let name = this.props.route.params.name; // OR ...
-    // let { name } = this.props.route.params;
-    this.props.navigation.setOptions({ title: name });
-  }
+export default function Chat(props) {
+  let { name, color } = props.route.params;
+  props.navigation.setOptions({ title: name });
 
-  render() {
-    return (
-      <View>
-        <Text>Hello!</Text>
-      </View>
-    );
-  }
+  return (
+    <View style={[{ backgroundColor: color }, styles.container]}>
+      <Text style={styles.text}>Hello Chat!</Text>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  text: {
+    color: "#ffffff",
+    fontSize: 45,
+    fontWeight: "600"
+  }
+});
