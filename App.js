@@ -4,6 +4,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import "react-native-gesture-handler";
 
+//firebase import
+const firebase = require("firebase");
+require("firebase/firestore");
+
 // import the screens we want to navigate
 import Start from "./components/Start";
 import Chat from "./components/Chat";
