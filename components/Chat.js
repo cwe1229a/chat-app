@@ -5,22 +5,7 @@ import { View, Platform, KeyboardAvoidingView } from "react-native";
 const firebase = require("firebase");
 require("firebase/firestore");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBP_FTsteHUWeawUQowhsO9LrYUHssVkg4",
-  authDomain: "chatapp-af9d0.firebaseapp.com",
-  projectId: "chatapp-af9d0",
-  storageBucket: "chatapp-af9d0.appspot.com",
-  messagingSenderId: "44516583816"
-};
-
-let app;
-if (firebase.apps.length === 0) {
-  app = firebase.initializeApp(firebaseConfig);
-} else {
-  app = firebase.app();
-}
-
-class Chat extends Component {
+export default class Chat extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -31,16 +16,21 @@ class Chat extends Component {
         name: ""
       }
     };
-  }
 
-  firebaseConfig() {
+    // Set up firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBP_FTsteHUWeawUQowhsO9LrYUHssVkg4",
+      authDomain: "chatapp-af9d0.firebaseapp.com",
+      projectId: "chatapp-af9d0",
+      storageBucket: "chatapp-af9d0.appspot.com",
+      messagingSenderId: "44516583816"
+    };
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-    //Stores and retrieves the chat messages users send
-    this.referenceChatMessages = firebase.firestore().collection("messages");
 
-    this.referenceMessagesUser = null;
+    // Reference to Firestore collection
+    this.referenceChatMessages = firebase.firestore().collection("messages");
   }
 
   onCollectionUpdate = (querySnapshot) => {
@@ -53,7 +43,10 @@ class Chat extends Component {
         _id: data._id,
         text: data.text,
         createAt: data.createdAt.toDate(),
-        user: data.user
+        user: {
+          _id: data.user._id,
+          name: data.user.name
+        }
       });
     });
     this.setState({
@@ -77,7 +70,7 @@ class Chat extends Component {
         messages: GiftedChat.append(previousState.messages, messages)
       }),
       () => {
-        this.addMessages();
+        this.addMessages(this.state.messages[0]);
       }
     );
   }
@@ -138,5 +131,3 @@ class Chat extends Component {
     );
   }
 }
-
-export default Chat;
