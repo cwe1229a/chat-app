@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import { View, Platform, KeyboardAvoidingView } from "react-native";
 
@@ -10,10 +10,17 @@ const firebaseConfig = {
   authDomain: "chatapp-af9d0.firebaseapp.com",
   projectId: "chatapp-af9d0",
   storageBucket: "chatapp-af9d0.appspot.com",
-  messagingSenderId: "44516583816",
+  messagingSenderId: "44516583816"
 };
 
-export default class Chat extends React.Component {
+let app;
+if (firebase.apps.length === 0) {
+  app = firebase.initializeApp(firebaseConfig);
+} else {
+  app = firebase.app();
+}
+
+class Chat extends Component {
   constructor() {
     super();
     this.state = {
@@ -26,29 +33,22 @@ export default class Chat extends React.Component {
     };
   }
 
-  const firebaseConfig = {
-    apiKey: 'AIzaSyAd6fGIIwQWI5MqB6oiUWCWWIsA88GJSb8',
-    authDomain: 'chat-app-ca5fc.firebaseapp.com',
-    projectId: 'chat-app-ca5fc',
-    storageBucket: 'chat-app-ca5fc.appspot.com',
-    messagingSenderId: '567584485893',
-    appId: '1:567584485893:web:64055bf80360e210f3226c',
-    measurementId: 'G-03TJLPBFZ7',
-  };
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
+  firebaseConfig() {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    //Stores and retrieves the chat messages users send
+    this.referenceChatMessages = firebase.firestore().collection("messages");
 
-  // Reference to Firestore collection
-  this.referenceChatMessages = firebase.firestore().collection('messages');
-}
+    this.referenceMessagesUser = null;
+  }
 
   onCollectionUpdate = (querySnapshot) => {
     const messages = [];
     // go through each document
     querySnapshot.forEach((doc) => {
       // get the QueryDocumentSnapshot's data
-      var data = doc.data();
+      let data = doc.data();
       messages.push({
         _id: data._id,
         text: data.text,
@@ -102,6 +102,10 @@ export default class Chat extends React.Component {
           name: name
         }
       });
+      this.referenceMessagesUser = firebase
+        .firestore()
+        .collection("messages")
+        .where("uid", "==", this.state.uid);
       this.unsubscribe = this.referenceChatMessages
         .orderBy("createdAt", "desc")
         .onSnapshot(this.onCollectionUpdate);
@@ -134,3 +138,5 @@ export default class Chat extends React.Component {
     );
   }
 }
+
+export default Chat;
