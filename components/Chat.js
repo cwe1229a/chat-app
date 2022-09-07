@@ -68,7 +68,7 @@ export default class Chat extends React.Component {
     });
   };
 
-  // add message to the state
+  // add messages to the state
   onSend(messages = []) {
     this.setState(
       (previousState) => ({
@@ -119,47 +119,55 @@ export default class Chat extends React.Component {
   }
 
   componentDidMount() {
+    // set name at top of the chat
     let { name } = this.props.route.params;
     this.props.navigation.setOptions({ title: name });
 
-    //checking if user is online or offline
+    // check if user is offline or online
     NetInfo.fetch().then((connection) => {
       if (connection.isConnected) {
         this.setState({
           isConnected: true
         });
-      }
-    });
 
-    // Reference to load messages from Firebase
-    this.referenceChatMessages = firebase.firestore().collection("messages");
+        // ref load messages from Firebase
+        this.referenceChatMessages = firebase
+          .firestore()
+          .collection("messages");
 
-    // Authenticate user anonymously in Firebase
-    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        firebase.auth().signInAnonymously();
+        // authenticate user anonymously
+        this.authUnsubscribe = firebase
+          .auth()
+          .onAuthStateChanged(async (user) => {
+            if (!user) {
+              firebase.auth().signInAnonymously();
+            }
+            this.setState({
+              uid: user.uid,
+              messages: [],
+              user: {
+                _id: user.uid,
+                name: name
+              }
+            });
+            this.unsubscribe = this.referenceChatMessages
+              .orderBy("createdAt", "desc")
+              .onSnapshot(this.onCollectionUpdate);
+          });
+      } else {
+        this.setState({
+          isConnected: false
+        });
+        this.getMessages();
       }
-      this.setState({
-        uid: user.uid,
-        messages: [],
-        user: {
-          _id: user.uid,
-          name: name
-        }
-      });
-      this.referenceMessagesUser = firebase
-        .firestore()
-        .collection("messages")
-        .where("uid", "==", this.state.uid);
-      this.saveMessages();
-      this.unsubscribe = this.referenceChatMessages
-        .orderBy("createdAt", "desc")
-        .onSnapshot(this.onCollectionUpdate);
     });
   }
+
   componentWillUnmount() {
-    this.authUnsubscribe();
-    this.unsubscribe();
+    if (this.isConnected) {
+      this.unsubscribe();
+      this.authUnsubscribe();
+    }
   }
 
   renderInputToolbar(props) {
