@@ -119,7 +119,6 @@ export default class Chat extends React.Component {
   }
 
   componentDidMount() {
-    this.deleteMessages();
     let { name } = this.props.route.params;
     this.props.navigation.setOptions({ title: name });
 
@@ -152,12 +151,14 @@ export default class Chat extends React.Component {
         .firestore()
         .collection("messages")
         .where("uid", "==", this.state.uid);
+      this.saveMessages();
       this.unsubscribe = this.referenceChatMessages
         .orderBy("createdAt", "desc")
         .onSnapshot(this.onCollectionUpdate);
     });
   }
   componentWillUnmount() {
+    this.authUnsubscribe();
     this.unsubscribe();
   }
 
