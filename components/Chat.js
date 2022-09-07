@@ -125,9 +125,9 @@ export default class Chat extends React.Component {
     //checking if user is online or offline
     NetInfo.fetch().then((connection) => {
       if (connection.isConnected) {
-        console.log("online");
-      } else {
-        console.log("offline");
+        this.setState({
+          isConnected: true
+        });
       }
     });
 
