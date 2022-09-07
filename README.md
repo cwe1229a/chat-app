@@ -12,6 +12,7 @@ Color options:  `#090C08` `#474056` `#8A95A5` `#B9C6AE`
 * Javascript
 * Expo
 * Firestore
+* AsyncStorage
 
 ## Why tho?
 This was created to learn about react native and practice developing native apps
