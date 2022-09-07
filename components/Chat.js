@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import { View, Platform, KeyboardAvoidingView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -74,8 +75,43 @@ export default class Chat extends React.Component {
       }
     );
   }
+  // getting, saving and deleting messages for asyncstorage
+  async getMessages() {
+    let messages = "";
+    try {
+      messages = (await AsyncStorage.getItem("messages")) || [];
+      this.setState({
+        messages: JSON.parse(messages)
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async saveMessages() {
+    try {
+      await AsyncStorage.setItem(
+        "messages",
+        JSON.stringify(this.state.messages)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async deleteMessages() {
+    try {
+      await AsyncStorage.removeItem("messages");
+      this.setState({
+        messages: []
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   componentDidMount() {
+    this.deleteMessages();
     let { name } = this.props.route.params;
     this.props.navigation.setOptions({ title: name });
 
