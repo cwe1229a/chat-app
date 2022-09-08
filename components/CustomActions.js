@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+
 import { connectActionSheet } from "@expo/react-native-action-sheet";
 
 import * as Permissions from "expo-permissions";
@@ -9,7 +10,8 @@ import * as Location from "expo-location";
 import firebase from "firebase";
 import firestore from "firebase";
 
-export default class CustomActions extends React.Component {
+export default class CustomAction extends React.Component {
+  //function to handle the communication features
   onActionPress = () => {
     const options = [
       "Choose From Library",
@@ -18,7 +20,7 @@ export default class CustomActions extends React.Component {
       "Cancel"
     ];
     const cancelButtonIndex = options.length - 1;
-    this.props.actionSheet().showActionSheetWithOptions(
+    this.props.showActionSheetWithOptions(
       {
         options,
         cancelButtonIndex
@@ -72,6 +74,6 @@ const styles = StyleSheet.create({
   }
 });
 
-CustomActions.contextTypes = {
+CustomAction.contextTypes = {
   actionSheet: PropTypes.func
 };

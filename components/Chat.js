@@ -6,6 +6,9 @@ import NetInfo from "@react-native-community/netinfo";
 
 import CustomActions from "./CustomActions";
 
+import * as Location from "expo-location";
+import MapView from "react-native-maps";
+
 const firebase = require("firebase");
 require("firebase/firestore");
 
@@ -17,9 +20,12 @@ export default class Chat extends React.Component {
       uid: 0,
       user: {
         _id: "",
-        name: ""
+        name: "",
+        avatar: ""
       },
-      isConnected: null
+      isConnected: null,
+      image: null,
+      location: null
     };
 
     // set up firebase
@@ -51,7 +57,9 @@ export default class Chat extends React.Component {
         user: {
           _id: data.user._id,
           name: data.user.name
-        }
+        },
+        image: data.image || null,
+        location: data.location || null
       });
     });
     this.setState({
@@ -66,7 +74,9 @@ export default class Chat extends React.Component {
       _id: message._id,
       text: message.text,
       createdAt: message.createdAt,
-      user: message.user
+      user: message.user,
+      image: message.image || null,
+      location: message.location || null
     });
   };
 
@@ -181,6 +191,24 @@ export default class Chat extends React.Component {
 
   renderCustomActions = (props) => <CustomActions {...props} />;
 
+  renderCustomView(props) {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
   render() {
     let name = this.props.route.params.name;
     let color = this.props.route.params.color;
@@ -193,6 +221,7 @@ export default class Chat extends React.Component {
           renderInputToolbar={this.renderInputToolbar.bind(this)}
           messages={this.state.messages}
           renderActions={this.renderCustomActions}
+          renderCustomView={this.renderCustomView}
           onSend={(messages) => this.onSend(messages)}
           user={{
             _id: this.state.user._id,
