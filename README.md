@@ -4,14 +4,16 @@
 They can also choose their chat colors! 
 Color options:  `#090C08` `#474056` `#8A95A5` `#B9C6AE`
 
-## Languages and technologies used
+## Languages, Libraries and technologies used
 * React
 * React-DOM
 * React Native
 * React-Navigation
 * Javascript
 * Expo
+* GiftedChat
 * Firestore
+* AsyncStorage
 
 ## Why tho?
 This was created to learn about react native and practice developing native apps
