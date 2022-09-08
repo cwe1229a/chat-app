@@ -4,6 +4,8 @@ import { View, Platform, KeyboardAvoidingView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 
+import CustomActions from "./CustomActions";
+
 const firebase = require("firebase");
 require("firebase/firestore");
 
@@ -177,6 +179,8 @@ export default class Chat extends React.Component {
     }
   }
 
+  renderCustomActions = (props) => <CustomActions {...props} />;
+
   render() {
     let name = this.props.route.params.name;
     let color = this.props.route.params.color;
@@ -188,6 +192,7 @@ export default class Chat extends React.Component {
         <GiftedChat
           renderInputToolbar={this.renderInputToolbar.bind(this)}
           messages={this.state.messages}
+          renderActions={this.renderCustomActions}
           onSend={(messages) => this.onSend(messages)}
           user={{
             _id: this.state.user._id,
