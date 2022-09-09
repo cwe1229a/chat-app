@@ -7,6 +7,7 @@ import NetInfo from "@react-native-community/netinfo";
 import CustomActions from "./CustomActions";
 
 import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
 import MapView from "react-native-maps";
 
 const firebase = require("firebase");
@@ -49,22 +50,22 @@ export default class Chat extends React.Component {
     // go through each document
     querySnapshot.forEach((doc) => {
       // get the QueryDocumentSnapshot's data
-      let data = doc.data();
+      var data = doc.data();
       messages.push({
         _id: data._id,
-        text: data.text || "",
-        createAt: data.createdAt.toDate(),
+        text: data.text,
+        createdAt: data.createdAt.toDate(),
         user: {
           _id: data.user._id,
           name: data.user.name,
-          avatar: data.user.avatar || ""
+          avatar: data.user.avatar
         },
         image: data.image || null,
         location: data.location || null
       });
     });
     this.setState({
-      messages
+      messages: messages
     });
   };
 
@@ -89,7 +90,7 @@ export default class Chat extends React.Component {
         messages: GiftedChat.append(previousState.messages, messages)
       }),
       () => {
-        this.addMessage();
+        this.addMessage(this.state.messages[0]);
         this.saveMessages();
         this.deleteMessages();
       }
@@ -220,14 +221,11 @@ export default class Chat extends React.Component {
       <View style={{ backgroundColor: color, flex: 1 }}>
         <GiftedChat
           renderInputToolbar={this.renderInputToolbar.bind(this)}
-          messages={this.state.messages}
           renderActions={this.renderCustomActions}
           renderCustomView={this.renderCustomView}
+          messages={this.state.messages}
           onSend={(messages) => this.onSend(messages)}
-          user={{
-            _id: this.state.user._id,
-            name: name
-          }}
+          user={{ _id: this.state.user._id, name: this.state.user.name }}
         />
         {Platform.OS === "android" ? (
           <KeyboardAvoidingView behavior="height" />
