@@ -23,7 +23,7 @@ export default class Chat extends React.Component {
         name: "",
         avatar: ""
       },
-      isConnected: null,
+      isConnected: false,
       image: null,
       location: null
     };
@@ -52,33 +52,35 @@ export default class Chat extends React.Component {
       let data = doc.data();
       messages.push({
         _id: data._id,
-        text: data.text,
+        text: data.text || "",
         createAt: data.createdAt.toDate(),
         user: {
           _id: data.user._id,
-          name: data.user.name
+          name: data.user.name,
+          avatar: data.user.avatar || ""
         },
         image: data.image || null,
         location: data.location || null
       });
     });
     this.setState({
-      messages: messages
+      messages
     });
   };
 
   // adding messages to firestore
-  addMessages = (message) => {
+  addMessage() {
+    const message = this.state.messages[0];
     this.referenceChatMessages.add({
       uid: this.state.uid,
       _id: message._id,
-      text: message.text,
+      text: message.text || "",
       createdAt: message.createdAt,
       user: message.user,
       image: message.image || null,
       location: message.location || null
     });
-  };
+  }
 
   // add messages to the state
   onSend(messages = []) {
@@ -87,14 +89,12 @@ export default class Chat extends React.Component {
         messages: GiftedChat.append(previousState.messages, messages)
       }),
       () => {
+        this.addMessage();
         this.saveMessages();
-        if (this.state.isConnected === true) {
-          this.addMessages(this.state.messages[0]);
-        }
+        this.deleteMessages();
       }
     );
   }
-
   // getting, saving and deleting messages for asyncstorage
   async getMessages() {
     let messages = "";
@@ -159,7 +159,8 @@ export default class Chat extends React.Component {
               messages: [],
               user: {
                 _id: user.uid,
-                name: name
+                name: name,
+                avatar: "https://placeimg.com/140/140/any"
               }
             });
             this.unsubscribe = this.referenceChatMessages
