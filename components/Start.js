@@ -41,19 +41,19 @@ export default class Start extends Component {
               <Text style={styles.textBox}>Choose Background Color:</Text>
               <View style={styles.colorOptions}>
                 <TouchableOpacity
-                  style={[styles.color, styles.color1]}
+                  style={[styles.color, styles.black]}
                   onPress={() => this.setState({ color: "#090C08" })}
                 />
                 <TouchableOpacity
-                  style={[styles.color, styles.color2]}
+                  style={[styles.color, styles.purple]}
                   onPress={() => this.setState({ color: "#474056" })}
                 />
                 <TouchableOpacity
-                  style={[styles.color, styles.color3]}
+                  style={[styles.color, styles.blue]}
                   onPress={() => this.setState({ color: "#8A95A5" })}
                 />
                 <TouchableOpacity
-                  style={[styles.color, styles.color4]}
+                  style={[styles.color, styles.green]}
                   onPress={() => this.setState({ color: "#B9C6AE" })}
                 />
               </View>
@@ -146,16 +146,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 30
   },
-  color1: {
+  black: {
     backgroundColor: "#090C08"
   },
-  color2: {
+  purple: {
     backgroundColor: "#474056"
   },
-  color3: {
+  blue: {
     backgroundColor: "#8A95A5"
   },
-  color4: {
+  green: {
     backgroundColor: "#B9C6AE"
   }
 });
